@@ -1,0 +1,19 @@
+{
+  "target": "STM32F412 Cortex-M4F (soft-float firmware)",
+  "renode": "Renode v1.17.0\n  build: 1.17.0+20260907gitf1dd1b4af\n  build type: Release\n  runtime: .NET 8.0.12",
+  "elf_sha256": "e5bb292bb8bc47635530b86748152943b74cb0d580ba5c299b27f79bdb8a69a7",
+  "startup_entry_ms": 810,
+  "startup_hold_complete_ms": 1110,
+  "load_recovery_entry_ms": 910,
+  "load_hold_complete_ms": 1210,
+  "load_min_measured_rpm": 930,
+  "baseline_duty_percent": 39.974000000000004,
+  "fault_cutoff_ms": 250.199692,
+  "fault_zero_at_ms": 4390.0,
+  "last_encoder_advance_ms": 4139.800308,
+  "restart_entry_ms": 1090,
+  "trace_rows": 799,
+  "telemetry_rows": 170,
+  "control_period_us_min": 9999.899999999907,
+  "control_period_us_max": 10000.190000000002
+}

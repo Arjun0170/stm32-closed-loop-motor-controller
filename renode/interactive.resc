@@ -1,0 +1,3 @@
+include @renode/boot.resc
+showAnalyzer sysbus.usart2
+start

@@ -1,0 +1,4 @@
+include @renode/MotorPlant.cs
+mach create "motor-controller"
+machine LoadPlatformDescription @renode/platform.repl
+sysbus LoadELF @build/motor.elf
