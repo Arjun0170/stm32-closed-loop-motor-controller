@@ -4,7 +4,7 @@ PYTHON ?= python3
 CFLAGS = -std=c11 -Wall -Wextra -Werror -O2 -g -Ifirmware
 ARMFLAGS = -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -ffreestanding -ffunction-sections -fdata-sections
 SOURCES = firmware/startup.c firmware/main.c firmware/board.c firmware/controller.c
-.PHONY: all host-test integration demo probe clean
+.PHONY: all host-test integration demo clean
 all: build/motor.elf
 build:
 	mkdir -p build
@@ -16,8 +16,6 @@ host-test: build/host_tests
 	./build/host_tests
 integration: all
 	$(PYTHON) tests/integration.py
-probe:
-	$(PYTHON) tests/native_timer_probe.py
 demo: integration
 	$(PYTHON) tools/plot.py
 clean:

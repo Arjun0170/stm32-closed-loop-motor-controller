@@ -54,7 +54,7 @@ def main():
         ax.grid(axis="y", alpha=.2)
         ax.set_xlim(0, 7.66)
     axes[0].annotate("start", xy=(.14, 0), xytext=(.3, 460), arrowprops={"arrowstyle": "->"})
-    axes[0].annotate("+600 RPM opposing load", xy=(2.28, 1020), xytext=(1.35, 2000), arrowprops={"arrowstyle": "->"})
+    axes[0].annotate(f'+{metrics["load_rpm"]} RPM opposing load', xy=(2.28, 1020), xytext=(1.35, 2000), arrowprops={"arrowstyle": "->"})
     axes[0].annotate("freeze encoder only", xy=(4.14, 1200), xytext=(3.1, 2050), arrowprops={"arrowstyle": "->"})
     axes[1].annotate(f'NO_MOTION → duty 0\n{metrics["fault_cutoff_ms"]:.3f} ms after last count',
                      xy=(cutoff, 0), xytext=(4.65, 65), arrowprops={"arrowstyle": "->", "color": "#c43b3b"}, color="#a32727")
@@ -63,12 +63,11 @@ def main():
     fig.text(.5, .016, f'Startup: {metrics["startup_entry_ms"]} ms | load recovery: {metrics["load_recovery_entry_ms"]} ms | each followed by a verified 300 ms hold', ha="center", fontsize=10)
     fig.tight_layout(rect=[0, .04, 1, .96])
     fig.savefig(build / "demo.svg", metadata={"Date": None})
-    fig.savefig(build / "demo.png", dpi=140)
     plt.close(fig)
     if args.snapshot:
         evidence = ROOT / "docs/evidence"
         evidence.mkdir(parents=True, exist_ok=True)
-        names = ["demo.svg", "plant.csv", "uart.txt", "metrics.json", "native-pwm.csv"]
+        names = ["demo.svg", "plant.csv", "uart.txt", "metrics.json"]
         for name in names:
             shutil.copyfile(build / name, evidence / name)
         manifest = {name: hashlib.sha256((evidence / name).read_bytes()).hexdigest() for name in names}

@@ -11,6 +11,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build"
+DEMO_LOAD_RPM = 600
 
 
 def renode_binary():
@@ -70,13 +71,13 @@ def assert_startup(telemetry, plant):
 
 def assert_load_recovery(telemetry, plant):
     load_rows = [r for r in plant if r["kind"] == "load"]
-    assert len(load_rows) == 1 and load_rows[0]["load_rpm"] == 600
+    assert len(load_rows) == 1 and load_rows[0]["load_rpm"] == DEMO_LOAD_RPM
     before = [r for r in telemetry if 1900 <= r["time_ms"] < 2140]
     after = [r for r in telemetry if 2140 <= r["time_ms"] <= 4140]
     dip = min(r["rpm"] for r in after)
     assert dip < 1140, "Load did not produce the required speed dip"
     baseline = sum(r["duty"] for r in before) / len(before)
-    assert max(r["duty"] for r in after) > baseline + 1000, "PI failed to raise duty under load"
+    assert max(r["duty"] for r in after) > baseline + DEMO_LOAD_RPM / 3000 * 10000 / 2, "PI failed to raise duty under load"
     # Start search after speed has actually dipped; old pre-disturbance samples cannot qualify.
     dip_time = next(r["time_ms"] for r in after if r["rpm"] == dip)
     recovery = settling_time(telemetry, dip_time, 4140) + dip_time - 2140
@@ -129,7 +130,7 @@ def main():
     command("status"); run(.02)
     command("setpoint 1200"); run(.02)
     command("start"); run(2.0)  # start at 140ms, load at 2140ms
-    script.append("sysbus WriteDoubleWord 0x70000008 600"); run(2.0)
+    script.append(f"sysbus WriteDoubleWord 0x70000008 {DEMO_LOAD_RPM}"); run(2.0)
     script.append("sysbus WriteDoubleWord 0x7000000c 1"); run(1.0)  # freeze at 4140ms
     script.append("sysbus WriteDoubleWord 0x7000000c 0")
     command("start"); run(.22)  # rejected at 5140ms
@@ -166,7 +167,7 @@ def main():
                    elf_sha256=hashlib.sha256((BUILD / "motor.elf").read_bytes()).hexdigest(),
                    startup_entry_ms=startup, startup_hold_complete_ms=startup+300,
                    load_recovery_entry_ms=recovery, load_hold_complete_ms=recovery+300,
-                   load_min_measured_rpm=dip, baseline_duty_percent=baseline/100,
+                   load_min_measured_rpm=dip, load_rpm=DEMO_LOAD_RPM, baseline_duty_percent=baseline/100,
                    fault_cutoff_ms=round(fault_ms, 6), fault_zero_at_ms=cutoff_ms,
                    last_encoder_advance_ms=last_advance_ms, restart_entry_ms=restart,
                    trace_rows=len(plant), telemetry_rows=len(telemetry),

@@ -7,6 +7,7 @@
   "load_recovery_entry_ms": 910,
   "load_hold_complete_ms": 1210,
   "load_min_measured_rpm": 930,
+  "load_rpm": 600,
   "baseline_duty_percent": 39.974000000000004,
   "fault_cutoff_ms": 250.199692,
   "fault_zero_at_ms": 4390.0,

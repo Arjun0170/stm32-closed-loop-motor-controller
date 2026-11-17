@@ -1,3 +1,0 @@
-probe: Miscellaneous.NativeTimerProbe @ sysbus 0x70000000
-timer3:
-    0 -> probe@0
